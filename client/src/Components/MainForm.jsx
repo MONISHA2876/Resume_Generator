@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { Plus, X, User, Mail, Phone, FileText, GraduationCap, Briefcase, Award } from 'lucide-react';
 import DownloadBtn from './SubComponents/DownloadBtn.jsx';
+import Preview from './SubComponents/Preview.jsx';
 import '../App.css';
 
 const ResumeGenerator = () => {
@@ -18,6 +19,7 @@ const ResumeGenerator = () => {
   });
 
   const resumeRef = useRef();
+  const previewRef = useRef();
 
   const updateField = (field, value) => {
     setResumeData(prev => ({ ...prev, [field]: value }));
@@ -51,7 +53,7 @@ const ResumeGenerator = () => {
   };
 
   const skillsArray = resumeData.skills.split(',').map(skill => skill.trim()).filter(skill => skill);
-
+  if (!Array.isArray(skillsArray)) skillsArray = [];
   return (
     <div className="h-screen bg-[#F5F5F5] overflow-hidden">
       {/* Print Styles jo print karte time apply hogi :)*/}
@@ -82,7 +84,7 @@ const ResumeGenerator = () => {
             </div>
 
             <div className='w-3xs flex justify-end m-3'>
-                <DownloadBtn />
+                <DownloadBtn previewRef={resumeRef} />
             </div>
         </div>
         </div>
@@ -90,10 +92,11 @@ const ResumeGenerator = () => {
         {/* Main Content */}
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
             {/* Form Section */}
-            <div className="space-y-6 w-100% mb-10 h-[calc(100vh-120px)] overflow-y-scroll">
+            <div className="space-y-6 w-100% mb-10 h-[calc(100vh-120px)] overflow-y-scroll bg-white rounded-lg shadow-md p-6">
               {/* Personal Information */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="border-b border-gray-200 pb-4">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                   <User className="w-5 h-5 mr-2" />
                   Personal Information
@@ -103,6 +106,7 @@ const ResumeGenerator = () => {
                     type="text"
                     placeholder="Full Name"
                     value={resumeData.fullName}
+                    maxlength="50"
                     onChange={(e) => updateField('fullName', e.target.value)}
                     className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
@@ -110,6 +114,7 @@ const ResumeGenerator = () => {
                     type="email"
                     placeholder="Email Address"
                     value={resumeData.email}
+                    maxlength="50"
                     onChange={(e) => updateField('email', e.target.value)}
                     className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
@@ -117,6 +122,7 @@ const ResumeGenerator = () => {
                     type="tel"
                     placeholder="Phone Number"
                     value={resumeData.phone}
+                    maxlength="15"
                     onChange={(e) => updateField('phone', e.target.value)}
                     className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
@@ -124,7 +130,7 @@ const ResumeGenerator = () => {
               </div>
 
               {/* Summary */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="border-b border-gray-200 py-4">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                   <FileText className="w-5 h-5 mr-2" />
                   Professional Summary
@@ -133,13 +139,14 @@ const ResumeGenerator = () => {
                   placeholder="Write a brief summary about yourself, your career goals, and key achievements..."
                   value={resumeData.summary}
                   onChange={(e) => updateField('summary', e.target.value)}
+                  maxLength={500}
                   rows={4}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                 />
               </div>
 
               {/* Education */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="border-b border-gray-200 py-4">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold text-gray-800 flex items-center">
                     <GraduationCap className="w-5 h-5 mr-2" />
@@ -172,6 +179,7 @@ const ResumeGenerator = () => {
                           type="text"
                           placeholder="Degree"
                           value={edu.degree}
+                          maxLength={100}
                           onChange={(e) => updateArrayField('education', index, 'degree', e.target.value)}
                           className="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                         />
@@ -179,6 +187,7 @@ const ResumeGenerator = () => {
                           type="text"
                           placeholder="Year"
                           value={edu.year}
+                          max={10}
                           onChange={(e) => updateArrayField('education', index, 'year', e.target.value)}
                           className="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                         />
@@ -187,6 +196,7 @@ const ResumeGenerator = () => {
                         type="text"
                         placeholder="Institution"
                         value={edu.institution}
+                        maxLength={100}
                         onChange={(e) => updateArrayField('education', index, 'institution', e.target.value)}
                         className="w-full mt-3 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                       />
@@ -196,7 +206,7 @@ const ResumeGenerator = () => {
               </div>
 
               {/* Experience */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="border-b border-gray-200 py-4">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold text-gray-800 flex items-center">
                     <Briefcase className="w-5 h-5 mr-2" />
@@ -229,6 +239,7 @@ const ResumeGenerator = () => {
                           type="text"
                           placeholder="Job Title"
                           value={exp.jobTitle}
+                          maxLength={100}
                           onChange={(e) => updateArrayField('experience', index, 'jobTitle', e.target.value)}
                           className="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                         />
@@ -236,6 +247,7 @@ const ResumeGenerator = () => {
                           type="text"
                           placeholder="Duration (e.g., 2020-2023)"
                           value={exp.duration}
+                          maxLength={50}
                           onChange={(e) => updateArrayField('experience', index, 'duration', e.target.value)}
                           className="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                         />
@@ -244,6 +256,7 @@ const ResumeGenerator = () => {
                         type="text"
                         placeholder="Company"
                         value={exp.company}
+                        maxLength={100}
                         onChange={(e) => updateArrayField('experience', index, 'company', e.target.value)}
                         className="w-full mb-3 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                       />
@@ -252,6 +265,7 @@ const ResumeGenerator = () => {
                         value={exp.description}
                         onChange={(e) => updateArrayField('experience', index, 'description', e.target.value)}
                         rows={3}
+                        maxLength={500}
                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
                       />
                     </div>
@@ -260,7 +274,7 @@ const ResumeGenerator = () => {
               </div>
 
               {/* Skills */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="border-b border-gray-200 py-4">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                   <Award className="w-5 h-5 mr-2" />
                   Skills
@@ -274,6 +288,9 @@ const ResumeGenerator = () => {
                 />
               </div>
             </div>
+
+
+
 
             {/* Preview Section */}
             <div className="lg:sticky w-100% h-[calc(100vh-120px)] overflow-y-auto top-0">
@@ -412,7 +429,7 @@ const ResumeGenerator = () => {
               </div>
 
               <div className="mt-6">
-                <DownloadBtn />
+                <DownloadBtn previewRef={resumeRef} />
               </div>
             </div>
           </div>
@@ -420,129 +437,8 @@ const ResumeGenerator = () => {
       </div>
 
       {/* Print-only version */}
-      <div className="print-only">
-        <div className="resume-preview max-w-4xl mx-auto p-8 bg-white">
-          {/* Header */}
-          <div className="text-center border-b-2 border-gray-200 pb-6 mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              {resumeData.fullName || 'Your Name'}
-            </h1>
-            <div className="flex flex-wrap justify-center items-center gap-4 text-gray-600">
-              {resumeData.email && (
-                <div className="flex items-center">
-                  <Mail className="w-4 h-4 mr-1" />
-                  {resumeData.email}
-                </div>
-              )}
-              {resumeData.phone && (
-                <div className="flex items-center">
-                  <Phone className="w-4 h-4 mr-1" />
-                  {resumeData.phone}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Summary */}
-          {resumeData.summary && (
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                <FileText className="w-5 h-5 mr-2" />
-                Professional Summary
-              </h2>
-              <p className="text-gray-700 leading-relaxed">{resumeData.summary}</p>
-            </div>
-          )}
-
-          {/* Experience */}
-          {resumeData.experience.some(exp => exp.jobTitle || exp.company) && (
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <Briefcase className="w-5 h-5 mr-2" />
-                Work Experience
-              </h2>
-              <div className="space-y-4">
-                {resumeData.experience.map((exp, index) => (
-                  (exp.jobTitle || exp.company) && (
-                    <div key={index} className="border-l-4 border-blue-500 pl-4">
-                      <div className="flex flex-wrap justify-between items-start mb-1">
-                        <h3 className="font-semibold text-gray-900">
-                          {exp.jobTitle || 'Job Title'}
-                        </h3>
-                        {exp.duration && (
-                          <span className="text-sm text-gray-500 font-medium">
-                            {exp.duration}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-gray-700 font-medium mb-2">
-                        {exp.company || 'Company Name'}
-                      </p>
-                      {exp.description && (
-                        <p className="text-gray-600 text-sm leading-relaxed">
-                          {exp.description}
-                        </p>
-                      )}
-                    </div>
-                  )
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Education */}
-          {resumeData.education.some(edu => edu.degree || edu.institution) && (
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <GraduationCap className="w-5 h-5 mr-2" />
-                Education
-              </h2>
-              <div className="space-y-3">
-                {resumeData.education.map((edu, index) => (
-                  (edu.degree || edu.institution) && (
-                    <div key={index} className="border-l-4 border-green-500 pl-4">
-                      <div className="flex flex-wrap justify-between items-start">
-                        <div>
-                          <h3 className="font-semibold text-gray-900">
-                            {edu.degree || 'Degree'}
-                          </h3>
-                          <p className="text-gray-700">
-                            {edu.institution || 'Institution'}
-                          </p>
-                        </div>
-                        {edu.year && (
-                          <span className="text-sm text-gray-500 font-medium">
-                            {edu.year}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  )
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Skills */}
-          {skillsArray.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <Award className="w-5 h-5 mr-2" />
-                Skills
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                {skillsArray.map((skill, index) => (
-                  <span
-                    key={index}
-                    className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+      <div ref={previewRef}>
+      <Preview ref={previewRef} resumeData={resumeData} skillsArray={skillsArray} />
       </div>
     </div>
   );
